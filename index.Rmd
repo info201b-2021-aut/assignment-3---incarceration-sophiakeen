@@ -1,0 +1,53 @@
+---
+title: "index.Rmd"
+author: "Sophia Keen"
+date: "11/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Assignment 3
+
+## Introduction
+
+For this assignment, I am looking at the disproportionate incarceration of people of color in the United State's prison system. Specifically targeted because of their race, black people in particular are mistreated by the criminal justice system as a whole. For example, getting unfairly stopped by the police and law enforcement unequal focus on low income areas, communities of color, and/or urban areas. In the data sets provided by the Vera Institute, I will be looking at
+prison admissions which is the number of times people are sent to prison in a given county. This variable is given as a total value and also separated out by race. This variable was mainly collected by the DCRP. The most recent year for this data source was 2013, and future years were either not included for some counties or complied from state sources. I chose to make the most recent year I would choose, 2013, in order to have a sufficient amount of data points when calculating numbers for my summary. I chose this variable because I wanted to see the trends of prison admissions for black people, whom have been unfairly targeted by the prison system, compared over the years, in different counties, and regions of the United States. 
+
+I also wanted to look at the population breakdown of people 15 - 64 in a given county and see if the race distribution matches what the prison admissions show. By only using the population of people 15 - 64, the charts will provide a more
+accurate picture because people <15 and 64+ are at very low risk of jail incarceration and because the proportion of these groups varies greatly by county.
+
+```{r include = FALSE}
+library(tidyverse)
+source("analysis.R")
+```
+## Summary
+The first question I looked as was: what is the average value of black prison admissions across all the counties (in the most recent year)? This gave me 108.2567. The second question was: what is the average value of white prison admissions across all the counties (in the most recent year), to compare against the first value I calculated. This answer was 108.7893. The next question -- what county is black prison admission the highest (in the most recent year) was Cook County, IL. Given this county, I asked what is the highest black prison admission number (in the most recent year) which was 10911 and what was the highest white prison admission number, which was 1366.
+
+## Trends Over Time
+This chart shows the average proportion of black prison admissions to the total prison admissions in each region of the United States(South, West, Midwest, and Northeast) over a thirteen year time period (2000-2013). I included this chart to see if the geographical region may influence the proportion of black prison admissions and if they would change over the time period of 2000 to 2013. 
+
+``` {r echo=FALSE}
+ggplot(data = summarized_2000to2013, aes(x = year, y = avg, color = region)) + geom_line()
+```
+
+Looking at this chart we can see that the South, Northeast, Midwest, and then West regions of the United States have the highest proportion of black prison admissions, respectively. Each of the trends are distinct on the graph and do not overlap on a given year, indicating that specific regions have distinct prison makeups. Both the Northeast and South have a downward trend since 2000 but they still remain the two highest proportions. The Midwest and the West have some variability but the overall trend stays relatively flat. Looking at the proportions themselves, in the South and Northeast, the proportion values started at around 0.35 and 0.5 which are extremely high because black people are still a minority group in those regions. 
+
+## Comparison Chart
+This graph compares the proportion of black prison admissions to the proportion of black residents aged 15 to 64 in the county. The purpose of this graph is to show us if the variability we saw in the first graph can be credited to variation in population demographics or if there may be another reason.
+
+``` {r echo=FALSE, warning=FALSE}
+ggplot(data = variable_chart_2000, aes(x = prop_pop_15to64, y = prop_prison_adm, color = region) + geom_point() + ggtitle("
+       Prop of black prison admission vs. prop of black population") + xlab("black prop ages 15-64") + ylab("black prop in prison admission")
+```
+
+Looking at this graph we can see that the ratios between the black proportion of the county population aged 15 to 64 and the black proportion of the prison admissions in the same county are not one to one. There is on average a higher proportion of black individuals admitted into prison than the proportion that live in that county. We would expect a one to one ratio if the prisons accurately represented the people in the county it resides in. The different regions of the United States all show the same pattern as well. 
+
+## Map
+A map that shows how your measure of interest varies geographically
+In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
+
+``` {r echo=FALSE}
+
+```
