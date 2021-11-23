@@ -38,16 +38,23 @@ Looking at this chart we can see that the South, Northeast, Midwest, and then We
 This graph compares the proportion of black prison admissions to the proportion of black residents aged 15 to 64 in the county. The purpose of this graph is to show us if the variability we saw in the first graph can be credited to variation in population demographics or if there may be another reason.
 
 ``` {r echo=FALSE, warning=FALSE}
-ggplot(data = variable_chart_2000, aes(x = prop_pop_15to64, y = prop_prison_adm, color = region) + geom_point() + ggtitle("
-       Prop of black prison admission vs. prop of black population") + xlab("black prop ages 15-64") + ylab("black prop in prison admission")
+ggplot(data = variable_chart_2000, aes(x = prop_pop_15to64, y = prop_prison_adm, color = region)) + geom_point() + ggtitle("Prop of black prison admission vs. prop of black population") + xlab("black prop ages 15-64") + ylab("black prop in prison admission")
 ```
 
 Looking at this graph we can see that the ratios between the black proportion of the county population aged 15 to 64 and the black proportion of the prison admissions in the same county are not one to one. There is on average a higher proportion of black individuals admitted into prison than the proportion that live in that county. We would expect a one to one ratio if the prisons accurately represented the people in the county it resides in. The different regions of the United States all show the same pattern as well. 
 
 ## Map
-A map that shows how your measure of interest varies geographically
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
+This map intends to show the distribution of black prison admissions in the year 2013 in each of the counties of the United States. Including this chart can help us more easily visualize the geographical distributions with in counties, states, and regions of the United States. 
 
 ``` {r echo=FALSE}
-
+ggplot(map_data) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = black_prison_adm), color = "gray", size = 0.3
+  ) +
+  coord_map() +
+  scale_fill_continuous(limits = c(min(map_data$black_prison_adm), max(map_data$black_prison_adm)), na.value = "white", low = "yellow", high = "red", name = "population") +
+  blank_theme +
+  ggtitle("Black prision admissions in the US in 2013")
 ```
+
+Looking at the map we can see that the lower values of prison admissions are colored in yellow and transition into red as the admissions go up. Most of the data is within the yellow range and a lot of counties have missing data, so they show up as white on the map. There are 3-4 obvious red spots and they are spread across the United States. 

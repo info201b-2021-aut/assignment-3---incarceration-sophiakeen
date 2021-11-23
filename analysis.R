@@ -1,11 +1,13 @@
 library(tidyverse)
 library(dplyr)
+library(maps)
+library(openintro)
 
 # load in data set
 county <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv")
 
 # creating a smaller data set with only the columns of interest
-county_df <- select(county, year, county_name, state, region, total_pop_15to64, black_pop_15to64, black_prison_adm, white_prison_adm, total_prison_adm)
+county_df <- select(county, year, fips, county_name, state, region, total_pop_15to64, black_pop_15to64, black_prison_adm, white_prison_adm, total_prison_adm)
   
 # SUMMARY-----------------------------------------------------------------------
 # What is the average value of black prison admissions across all the counties (in the most recent year)?
@@ -52,23 +54,49 @@ ggplot(data = summarized_2000to2013, aes(x = year, y = avg, color = region)) + g
 
 # VARIABLE COMPARISON CHART-----------------------------------------------------
 # this chart compares the proportion of black prison admissions to the proportion of black residents aged 15 to 64 in the county
-# we would expect a one to one ratio and a straight line
 
 # select the specific cols
 selected_df <- select(county_df, year, region, black_pop_15to64, total_pop_15to64, black_prison_adm, total_prison_adm)
 # make new cols of proportions
 variable_chart_df <- mutate(selected_df, prop_pop_15to64 = black_pop_15to64/total_pop_15to64, prop_prison_adm = black_prison_adm/total_prison_adm)
 # filter so that only the data from 2000 is shown
-variable_chart_2000 <- filter(variable_chart_df, year == 2013)
+variable_chart_2000 <- filter(variable_chart_df, year == 2000)
 # create graph
 ggplot(data = variable_chart_2000, aes(x = prop_pop_15to64, y = prop_prison_adm, color = region)) + geom_point() + ggtitle("
        Prop of black prison admission vs. prop of black population") + xlab("black prop ages 15-64") + ylab("black prop in prison admission")
 
-# If you choose to add a color encoding (not required), you need a legend for your different color and a clear legend title
-  
 # MAP---------------------------------------------------------------------------
-# show how a variable is distributed geographically. Again, think carefully about what such a comparison means, and want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-# Your map needs a title
+# black prison admission for each county
+
+map_df <- county_df %>%
+  filter(year == 2013)
+
+county_shapes <- map_data("county") %>%
+  unite(polyname, region, subregion, sep = ",") %>%
+  left_join(county.fips, by = "polyname")
+
+map_data <- county_shapes %>%
+  left_join(map_df, by = "fips")
+
+blank_theme <- theme_bw() +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()
+  )
+
+ggplot(map_data) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = black_prison_adm), color = "gray", size = 0.3
+  ) +
+  coord_map() +
+  scale_fill_continuous(limits = c(min(map_data$black_prison_adm), max(map_data$black_prison_adm)), na.value = "white", low = "yellow", high = "red", name = "population") +
+  blank_theme +
+  ggtitle("Black prision admissions in the US in 2013")
+
 # Your color scale needs a legend with a clear label
-# Use a map based coordinate system to set the aspect ratio of your map (see reading)
-# Use a minimalist theme for the map (see reading)
